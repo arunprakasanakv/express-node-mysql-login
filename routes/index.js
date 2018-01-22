@@ -12,8 +12,6 @@ const saltRounds = 10;
 
 /* Login Route */
 router.get('/', function(req, res, next) {
-	console.log(req.user);
-	console.log(req.isAuthenticated());
 	res.render('home', { title: 'Home' });
 });
 
