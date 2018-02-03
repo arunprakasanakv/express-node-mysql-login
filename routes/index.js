@@ -16,7 +16,12 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/login', function(req, res, next) {
-  res.render('login', { title: 'Login' });
+	if (req.isAuthenticated()){
+		res.redirect('/profile');
+	}
+	else{
+		res.render('login', { title: 'Login' });
+	}
 });
 
 router.post('/login', passport.authenticate('local',{
@@ -24,16 +29,17 @@ router.post('/login', passport.authenticate('local',{
 	failureRedirect: '/login'
 }));
 
-router.get('/profile', authenticationMiddleware(), function(req, res, next) {
-	res.render('profile', { title: 'Profile' });
-});
-
 /* End Login Route */
 
 /* Register Route */
 
 router.get('/register', function(req, res, next) {
-  res.render('index', { title: 'Sign up' });
+	if (req.isAuthenticated()){
+		res.redirect('/profile');
+	}
+	else{
+		res.render('index', { title: 'Sign up' });
+	}
 });
 
 router.post('/register', function(req, res, next) {
@@ -50,7 +56,7 @@ router.post('/register', function(req, res, next) {
 		const db = require('../db.js');
 		const username = req.body.name;
 		const password = req.body.password;
-		const email = req.body.email;
+		const email = req.body.emailid;
 
 		bcrypt.hash(password, saltRounds, function(err, hash) {
 		  // Store hash in your password DB.
@@ -84,6 +90,36 @@ router.get('/logout', function(req, res, next) {
 	res.redirect('/');
 });
 
+/* profile route */
+router.get('/profile', authenticationMiddleware(), function(req, res, next) {
+	var id = req.session.passport.user.user_id;
+	const db = require('../db.js');
+		db.query('SELECT * FROM profile WHERE id = ?',[id],function(error,results,fields){
+			if(error) throw error;
+			console.log(results[0].id);
+			res.render('profile', { title: 'Profile',data :results[0] });
+		});
+});
+
+router.post('/profile', authenticationMiddleware(), function(req, res, next) {
+	var id = req.session.passport.user.user_id;
+	const db = require('../db.js');
+	const username = req.body.username;
+	const password = req.body.password;
+	const emailid = req.body.emailid;
+	bcrypt.hash(password, saltRounds, function(err, hash) {
+		var data = {
+			username:username,
+			emailid:emailid,
+			password:hash
+		};
+		db.query('UPDATE profile set ? WHERE id = ?',[data,id],function(error,results,fields){
+			if(error) throw error;
+			res.render('profile', { title: 'Profile',notify:'updated',data :data});
+		});
+	});
+});
+/* profile end */
 
 	passport.serializeUser(function(user_id, done) {
 	  done(null, user_id);
@@ -95,7 +131,7 @@ router.get('/logout', function(req, res, next) {
 
 function authenticationMiddleware () {  
 	return (req, res, next) => {
-		//console.log(`req.session.passport.user: ${JSON.stringify(req.session.passport)}`);
+		console.log(`req.session.passport.user: ${JSON.stringify(req.session.passport)}`);
 
 	if (req.isAuthenticated()) return next();
 		res.redirect('/login')

@@ -5,9 +5,9 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('login-auth:server');
+var debug = require('debug')('login-node:server');
 var http = require('http');
-var env = require('dotenv').config();
+
 /**
  * Get port from environment and store in Express.
  */
