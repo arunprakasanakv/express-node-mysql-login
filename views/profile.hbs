@@ -1,7 +1,22 @@
 {{> head}}
 {{> header}}
-<div class="container">
     <h2 class="text-center">{{title}}</h2>
-</div>
+	<form  action="/profile" method="post">
+    	<div class="form-group">
+    		<label for="name">Name:</label>
+			<input class="form-control" name="username" placeholder="Name" type="text" value="{{data.username}}"> 
+    	</div>
+    	<div class="form-group">
+    		<label for="emailid">Email:</label>
+			<input class="form-control" name="emailid" placeholder="Email" type="email" value="{{data.emailid}}"> 
+    	</div>
+		<div class="form-group">
+    		<label for="password">Password:</label>
+			<input class="form-control" name="password" placeholder="password" type="password"> 
+    	</div>
+    	<div class="form-group text-center">
+    		<button class="btn btn-info btn-block" type="submit">Sign up</button>
+    	</div>
+    </form>
 {{> footer}}
 {{> foot}}

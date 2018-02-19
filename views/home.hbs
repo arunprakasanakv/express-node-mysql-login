@@ -1,5 +1,24 @@
 {{> head}}
+<br>
 <div class="container">
-    <h2 class="text-center">{{title}}</h2>
+	 <nav class="navbar navbar-inverse">
+		  <div class="container-fluid">
+		    <div class="navbar-header">
+		      <a class="navbar-brand" href="/">Ada daii</a>
+		    </div>
+		    <ul class="nav navbar-nav navbar-right">
+		    	<li><a href="/">Home</a></li>
+		    	{{#if isAuthenticated}}
+		    	<li><a>About</a></li>
+		    	<li><a href="/profile">Profile</a></li>
+		    	<li><a href="/logout">Logout</a></li>
+		    	{{else}}
+		    	<li><a href="/register"><span class="fa fa-user"></span> Sign Up</a></li>
+		    	<li><a href="/login"><span class="fa fa-sign-in "></span> Login</a></li>
+				{{/if}}
+		    </ul>
+		  </div>
+		</nav> 
+	<h2 class="text-center">{{title}}</h2>
 </div>
 {{> foot}}

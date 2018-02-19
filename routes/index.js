@@ -93,10 +93,12 @@ router.get('/logout', function(req, res, next) {
 /* profile route */
 router.get('/profile', authenticationMiddleware(), function(req, res, next) {
 	var id = req.session.passport.user.user_id;
+	// req.session.passport.user_name = 'arun';
 	const db = require('../db.js');
 		db.query('SELECT * FROM profile WHERE id = ?',[id],function(error,results,fields){
 			if(error) throw error;
-			console.log(results[0].id);
+			// console.log(results[0].id);
+			// console.log(`${JSON.stringify(req.session.passport)}`);
 			res.render('profile', { title: 'Profile',data :results[0] });
 		});
 });
@@ -121,6 +123,22 @@ router.post('/profile', authenticationMiddleware(), function(req, res, next) {
 });
 /* profile end */
 
+
+/* Chat Route */
+
+router.get('/chat', authenticationMiddleware(),function(req, res, next) {
+	var id = req.session.passport.user.user_id;
+	const db = require('../db.js');
+		db.query('SELECT * FROM profile WHERE id = ?',[id],function(error,results,fields){
+			if(error) throw error;
+			// console.log(results[0].id);
+			// console.log(`${JSON.stringify(req.session.passport)}`);
+			req.session.passport.user_name = results[0].username;
+			res.render('chat', { username: results[0].username});
+		});
+});
+
+/* Chat Route end */
 	passport.serializeUser(function(user_id, done) {
 	  done(null, user_id);
 	});
@@ -131,11 +149,13 @@ router.post('/profile', authenticationMiddleware(), function(req, res, next) {
 
 function authenticationMiddleware () {  
 	return (req, res, next) => {
-		console.log(`req.session.passport.user: ${JSON.stringify(req.session.passport)}`);
+		// console.log(`${JSON.stringify(req.session.passport)}`);
 
 	if (req.isAuthenticated()) return next();
 		res.redirect('/login')
 	}
 }
+
+
 
 module.exports = router;

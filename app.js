@@ -86,6 +86,9 @@ passport.use(new LocalStrategy({ usernameField: 'emailid', passwordField: 'passw
     }
 ));
 
+// Socket.io starts
+
+// Socket.io ends
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
